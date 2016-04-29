@@ -14,9 +14,15 @@ def env(args):
 def bind(target, binder, properties):
     for name, bindingTarget in __getBindingTargets(target).iteritems():
         if bindingTarget.type == 'output':
-            destination = __destinationForBindingTarget(name, properties)
+            destination = binder.destinationForBindingTarget(name, properties)
             binding = binder.bindProducer(destination, properties)
             bindingTarget.send = binding.send
+
+        elif bindingTarget.type == 'input':
+            group = binder.groupForBindingTarget(name, properties)
+            destination =binder.destinationForBindingTarget(name, properties)
+            binding = binder.bindConsumer(destination, group, properties)
+            bindingTarget.receive = binding.receive
 
 def __getBindingTargets(object):
     bindingTargets = {}
@@ -26,9 +32,6 @@ def __getBindingTargets(object):
         if v.__class__ == components.BindingTarget:
             bindingTargets[k] = v
     return bindingTargets
-
-def __destinationForBindingTarget(name, properties):
-    return properties['spring.cloud.stream.bindings.' + name + '.destination']
 
 
 def __parseSpringApplicationJson():

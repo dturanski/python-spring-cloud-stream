@@ -18,8 +18,8 @@ class Sink:
     def __init__(self):
         self.input =  BindingTarget('input','input')
 
-    def receive(self, timeout):
-        return self.input.receive(timeout)
+    def receive(self, callback):
+        return self.input.receive(callback)
 
 #TODO: clean up inheritance
 class Processor(Source, Sink):
