@@ -2,14 +2,18 @@ import os
 import json
 from spring.cloud.dataflow import components
 
+
 def env(args):
-    environment = __parseSpringApplicationJson()
+    environment = os.environ
+    environment.update(__parseSpringApplicationJson())
+
     for arg in args:
         if (arg.startswith('--')):
-            (key,value)=arg.split("=")
-            key = key.replace('--','')
-            environment[key]=value
+            (key, value) = arg.split("=")
+            key = key.replace('--', '')
+            environment[key] = value
     return environment
+
 
 def bind(target, binder, properties):
     for name, bindingTarget in __getBindingTargets(target).iteritems():
@@ -20,9 +24,10 @@ def bind(target, binder, properties):
 
         elif bindingTarget.type == 'input':
             group = binder.groupForBindingTarget(name, properties)
-            destination =binder.destinationForBindingTarget(name, properties)
+            destination = binder.destinationForBindingTarget(name, properties)
             binding = binder.bindConsumer(destination, group, properties)
             bindingTarget.receive = binding.receive
+
 
 def __getBindingTargets(object):
     bindingTargets = {}
@@ -35,11 +40,11 @@ def __getBindingTargets(object):
 
 
 def __parseSpringApplicationJson():
-    environment={}
+    environment = {}
     try:
-        springApplicationJson=os.environ['SPRING_APPLICATION_JSON']
+        springApplicationJson = os.environ['SPRING_APPLICATION_JSON']
         if (springApplicationJson):
-            environment=json.loads(springApplicationJson)
+            environment = json.loads(springApplicationJson)
     except:
         pass
     return environment
