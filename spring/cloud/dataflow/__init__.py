@@ -1,1 +1,1 @@
-__all__ = ["binder", "dataflowapp"]
+__all__ = ["binder", "dataflowapp", "components"]

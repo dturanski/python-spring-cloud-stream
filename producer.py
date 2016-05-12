@@ -1,14 +1,17 @@
 #!/usr/bin/env python
-from spring.cloud.dataflow.rabbit.binder import Binder
-from spring.cloud.dataflow import dataflowapp, components
-
-import pika
 import sys
 
+import pika
+
+from spring.cloud.dataflow import dataflowapp, components
+from spring.cloud.dataflow.binder.rabbit import Binder
 
 env = dataflowapp.env(sys.argv)
-### Obtained from the cloudamqp service dashboard
-#connectionUrl = 'amqp://xgkwomgl:aIUHpX761b_pnC9tLnbaVOZAyE9s_1mH@fox.rmq.cloudamqp.com/xgkwomgl'
+
+#
+# If deployed using Spring Cloud Dataflow, or you want to set these environment variables, use this connection String
+#connectionUrl = 'amqp://{0}:{1}'.format(env['SPRING_RABBITMQ_HOST'],env['SPRING_RABBITMQ_PORT'])
+#
 connectionUrl = 'amqp://localhost:5672'
 connection = pika.BlockingConnection(pika.URLParameters(connectionUrl))
 

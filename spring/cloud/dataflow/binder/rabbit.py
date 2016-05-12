@@ -1,7 +1,9 @@
 import uuid
-from  spring.cloud.dataflow.basebinder import BaseBinder
 
-#TODO: Autobind DLQ
+from  spring.cloud.dataflow.binder.basebinder import BaseBinder
+
+
+# TODO: Autobind DLQ
 class Binder(BaseBinder):
     def __init__(self, connection):
         BaseBinder.__init__(self)
@@ -10,20 +12,20 @@ class Binder(BaseBinder):
 
     def doBindProducer(self, name, properties):
         groups = properties[self.BINDING_PROPERTIES_PREFIX + 'output.producer.requiredGroups'].split(',')
-        #TODO: durable passed as property
-        #TODO: handle partitioning
-        #TODO: Apply prefix to exchange name passed in properties?
-        #TODO Non-partitioned routing key = '#'
+        # TODO: durable passed as property
+        # TODO: handle partitioning
+        # TODO: Apply prefix to exchange name passed in properties?
+        # TODO Non-partitioned routing key = '#'
         channel = self.connection.channel()
-        prefix = self.__getRabbitProperty(properties,'prefix')
+        prefix = self.__getRabbitProperty(properties, 'prefix')
         exchangeName = self.applyPrefix(prefix, name)
 
         channel.exchange_declare(exchange=exchangeName,
-                             type='topic', durable=True)
+                                 type='topic', durable=True)
 
         # TODO: Apply prefix to queue name passed in properties?
         for group in groups:
-            queueName= exchangeName + '.' + group
+            queueName = exchangeName + '.' + group
             channel.queue_declare(queue=queueName, durable=True)
 
         return ProducerBinding(channel, name)
@@ -31,15 +33,15 @@ class Binder(BaseBinder):
     def doBindConsumer(self, name, group, properties):
         baseQueueName = None
         if not group:
-                baseQueueName = self.groupedName(name, 'spring-gen.' + uuid.uuid4())
+            baseQueueName = self.groupedName(name, 'spring-gen.' + uuid.uuid4())
         else:
-                baseQueueName = self.groupedName(name, group)
+            baseQueueName = self.groupedName(name, group)
 
         channel = self.connection.channel()
         prefix = self.__getRabbitProperty(properties, 'prefix')
         exchangeName = self.applyPrefix(prefix, name)
         channel.exchange_declare(exchange=exchangeName,
-                             type='topic', durable=True)
+                                 type='topic', durable=True)
 
         queueName = self.applyPrefix(prefix, baseQueueName)
 
@@ -47,22 +49,22 @@ class Binder(BaseBinder):
 
         return ConsumerBinding(channel, queueName)
 
-
     def __getRabbitProperty(self, properties, name):
         try:
             return properties[self.RABBIT_PROPERTIES_PREFIX + name]
         except:
             return ''
 
+
 class Binding:
     def __init__(self, channel, destination):
         self.channel = channel
         self.destination = destination
 
-
     def unbind(self):
         # TODO: implement
         return
+
 
 class ProducerBinding(Binding):
     def __init__(self, channel, destination):
@@ -73,14 +75,16 @@ class ProducerBinding(Binding):
                                    routing_key=self.destination,
                                    body=message)
 
+
 class ConsumerBinding(Binding):
     def __init__(self, channel, destination):
         Binding.__init__(self, channel, destination)
 
     def receive(self, callback):
         self.channel.basic_consume(CallbackWrapper(callback).invoke,
-                              queue=self.destination)
+                                   queue=self.destination)
         self.channel.start_consuming()
+
 
 class CallbackWrapper:
     def __init__(self, callback):
@@ -89,5 +93,3 @@ class CallbackWrapper:
     def invoke(self, channel, method, properties, body):
         self.callback(channel, method, properties, body)
         channel.basic_ack(delivery_tag=method.delivery_tag)
-
-

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import abc
 
+
 class BaseBinder(object):
     __metaclass__ = abc.ABCMeta
 
@@ -8,7 +9,7 @@ class BaseBinder(object):
         self.BINDING_PROPERTIES_PREFIX = 'spring.cloud.stream.bindings.'
 
     @abc.abstractmethod
-    def doBindProducer(self,name, properties):
+    def doBindProducer(self, name, properties):
         """Subclasses must provide implementation"""
         return
 
@@ -23,25 +24,27 @@ class BaseBinder(object):
     def constructDLQName(self, name):
         return name + ".dlq";
 
-    def groupedName(self,group,name):
-        groupName =  group if group else 'default'
-        return '%s.%s' %(groupName, name)
+    def groupedName(self, group, name):
+        groupName = group if group else 'default'
+        return '%s.%s' % (groupName, name)
 
     def destinationForBindingTarget(self, name, properties):
-        return properties[self.BINDING_PROPERTIES_PREFIX + name + '.destination']
+        return self.__getBindingProperty__(name, 'destination', properties)
 
     def groupForBindingTarget(self, name, properties):
-        return properties[self.BINDING_PROPERTIES_PREFIX + name + '.group']
+        return self.__getBindingProperty__(name, 'group', properties)
+
     def bindProducer(self, name, properties):
         return self.doBindProducer(name, properties)
 
     def bindConsumer(self, name, group, properties):
         return self.doBindConsumer(name, group, properties)
 
-
-
-
-
-
+    def __getBindingProperty__(self, name, property, properties):
+        try:
+            return properties[self.BINDING_PROPERTIES_PREFIX + name + '.' + property]
+        except(KeyError):
+            raise RuntimeError('Environment does not contain required property \'{0}\''.format(
+                self.BINDING_PROPERTIES_PREFIX + name + '.' + property))
 
 

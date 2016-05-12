@@ -1,7 +1,6 @@
-
-#import ez_setup
-#ez_setup.use_setuptools()
-
+#
+# Requires setuptools. From the command line, type 'pip install setuptools' if this fails.
+#
 from setuptools import setup, find_packages
 
 setup(name='spring-cloud-dataflow',
@@ -32,5 +31,5 @@ setup(name='spring-cloud-dataflow',
             'Programming Language :: Python :: 2',
             'Programming Language :: Python :: 2.7'
       ],
-      install_requires=['pika'],
+      install_requires=['pika','kafka-python'],
       )

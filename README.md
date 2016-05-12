@@ -1,3 +1,7 @@
+NOTE: Currently does not support Python 3
+
+This includes example apps `producer.py` and `consumer.py` that you can run standalone. To run them as is, first start a rabbitmq-server on localhost.
+
 To send a message:
 
 	 $export SPRING_APPLICATION_JSON="{\"spring.cloud.stream.bindings.output.producer.requiredGroups\":\"ticktock\",\"spring.cloud.stream.bindings.output.destination\":\"ticktock.time\"}"
@@ -20,4 +24,8 @@ or
 
 To install the Spring Cloud Dataflow binder modules:
 
-     $sudo python ./setup.py install
+     - You may need to install pip
+     - You may need to change permissions or run the following as sudo
+
+     $pip install setuptools
+     $python ./setup.py install
