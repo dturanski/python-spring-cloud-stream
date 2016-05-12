@@ -1,6 +1,6 @@
 import os
 import json
-import components
+from spring.cloud.dataflow import components
 
 def env(args):
     environment = __parseSpringApplicationJson()
