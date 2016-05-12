@@ -9,18 +9,15 @@ import sys
 env = dataflowapp.env(sys.argv)
 
 ### Obtained from the cloudamqp service dashboard
-connection = pika.BlockingConnection(
-    pika.URLParameters('amqp://xgkwomgl:aIUHpX761b_pnC9tLnbaVOZAyE9s_1mH@fox.rmq.cloudamqp.com/xgkwomgl'))
+#connectionUrl = 'amqp://xgkwomgl:aIUHpX761b_pnC9tLnbaVOZAyE9s_1mH@fox.rmq.cloudamqp.com/xgkwomgl'
+connectionUrl = 'amqp://localhost:5672'
+connection = pika.BlockingConnection(pika.URLParameters(connectionUrl))
 
 sink = components.Sink()
 dataflowapp.bind(sink,Binder(connection),env)
 
-
 def callback(channel, method, properties, body):
     print(" [x] Received %r" % body, properties)
-    
-    channel.basic_ack(delivery_tag=method.delivery_tag)
-
 
 sink.receive(callback)
 

@@ -78,6 +78,16 @@ class ConsumerBinding(Binding):
         Binding.__init__(self, channel, destination)
 
     def receive(self, callback):
-        self.channel.basic_consume(callback,
+        self.channel.basic_consume(CallbackWrapper(callback).invoke,
                               queue=self.destination)
         self.channel.start_consuming()
+
+class CallbackWrapper:
+    def __init__(self, callback):
+        self.callback = callback
+
+    def invoke(self, channel, method, properties, body):
+        self.callback(channel, method, properties, body)
+        channel.basic_ack(delivery_tag=method.delivery_tag)
+
+

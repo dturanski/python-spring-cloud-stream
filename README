@@ -1,0 +1,6 @@
+#
+# This file expected by the python installer
+#
+Spring Cloud Dataflow binder module for python allows native python apps to participate in Spring Cloud Dataflow streams.
+
+See https://github.com/dturanski/python-dataflow-binder for examples.
