@@ -4,8 +4,10 @@ for details on how to use this module.
 
 To install the Spring Cloud Dataflow binder module:
 
-     - You may need to install pip
-     - You may need to change permissions or run the following as sudo
+* You may need to install pip
+* You may need to change permissions or run the following as sudo
 
-     $pip install setuptools
-     $python ./setup.py install
+ ````
+ $pip install setuptools
+ $python ./setup.py install
+````
