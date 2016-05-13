@@ -21,11 +21,3 @@ To receive messages:
 or
 
      $./consumer.py --spring.cloud.stream.bindings.input.group=ticktock --spring.cloud.stream.bindings.input.destination=ticktock.time
-
-To install the Spring Cloud Dataflow binder modules:
-
-     - You may need to install pip
-     - You may need to change permissions or run the following as sudo
-
-     $pip install setuptools
-     $python ./setup.py install
