@@ -63,3 +63,18 @@ def __parseSpringApplicationJson():
     except:
         pass
     return environment
+
+
+class cloud:
+    def __init__(self, env):
+        self.env = env
+
+    def service(self, name):
+        try:
+            vcap_services = json.loads(self.env['VCAP_SERVICES'])
+            for (serviceName, serviceInstances) in vcap_services.iteritems():
+                for service in serviceInstances:
+                    if (service['name'] == name):
+                        return service
+        except KeyError:
+            raise RuntimeError('application environment does not contain \'VCAP_SERVICES\'')

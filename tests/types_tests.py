@@ -1,7 +1,12 @@
 import unittest
+import sys
+import os
 from spring.cloud.dataflow import components
 
 class TestTypes(unittest.TestCase):
+    def setUp(self):
+        sys.path.insert(0, os.path.abspath('..'))
+
     def testReflection(self):
         processor = components.Processor()
         for (k,v) in processor.__dict__.iteritems() :
