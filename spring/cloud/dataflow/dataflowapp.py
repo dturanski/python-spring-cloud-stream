@@ -15,8 +15,10 @@ Copyright 2016 the original author or authors.
 """
 import os
 import json
-from spring.cloud.dataflow import components
+import socket
+import multiprocessing
 
+from spring.cloud.dataflow import components
 
 def env(args):
     environment = os.environ
@@ -78,3 +80,25 @@ class cloud:
                         return service
         except KeyError:
             raise RuntimeError('application environment does not contain \'VCAP_SERVICES\'')
+
+    def start_health_check(self):
+        def health_check():
+             try:
+                 PORT = int(env['PORT'])
+             except KeyError:
+                 try:
+                     PORT = int(env['VCAP_APP_PORT'])
+                 except KeyError:
+                     raise RuntimeError('application environment does not contain \'PORT\' or \'VCAP_APP_PORT\'')
+
+             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+             s.bind((socket.gethostname(), PORT))
+             s.listen(1)
+
+             while 1:
+                 # accept connections from outside
+                 (clientsocket, address) = s.accept()
+
+        thread = multiprocessing.Process(target=health_check)
+        thread.start()
+        return thread
