@@ -84,10 +84,10 @@ class cloud:
     def start_health_check(self):
         def health_check():
              try:
-                 PORT = int(env['PORT'])
+                 PORT = int(self.env['PORT'])
              except KeyError:
                  try:
-                     PORT = int(env['VCAP_APP_PORT'])
+                     PORT = int(self.env['VCAP_APP_PORT'])
                  except KeyError:
                      raise RuntimeError('application environment does not contain \'PORT\' or \'VCAP_APP_PORT\'')
 
@@ -96,8 +96,8 @@ class cloud:
              s.listen(1)
 
              while 1:
-                 # accept connections from outside
-                 (clientsocket, address) = s.accept()
+                # accept connections from outside
+                s.accept()
 
         thread = multiprocessing.Process(target=health_check)
         thread.start()
