@@ -41,6 +41,9 @@ class Binder(BaseBinder):
         for group in groups:
             queueName = exchangeName + '.' + group
             channel.queue_declare(queue=queueName, durable=True)
+            channel.queue_bind(exchange=exchangeName,
+                               queue=queueName,
+                               routing_key=name)
 
         return ProducerBinding(channel, name)
 
@@ -60,6 +63,10 @@ class Binder(BaseBinder):
         queueName = self.applyPrefix(prefix, baseQueueName)
 
         channel.queue_declare(queue=queueName, durable=True)
+
+        channel.queue_bind(exchange=exchangeName,
+                           queue=queueName,
+                           routing_key='#')
 
         return ConsumerBinding(channel, queueName)
 

@@ -1,0 +1,8 @@
+---
+applications:
+- name: consumer-app
+  memory: 128MB
+  buildpack: python_buildpack
+  services:
+     - rabbit
+  command: python consumer.py --spring.cloud.stream.bindings.input.group=test --spring.cloud.stream.bindings.input.destination=test.sink

@@ -5,8 +5,9 @@ import pika
 
 from spring.cloud.dataflow import dataflowapp, components
 from spring.cloud.dataflow.binder.rabbit import Binder
+from spring.cloud import environment
 
-env = dataflowapp.env(sys.argv)
+env = environment.env(sys.argv)
 #
 # If deployed using Spring Cloud Dataflow, or you want to set these environment variables, use this connection String
 #connectionUrl = 'amqp://{0}:{1}'.format(env['SPRING_RABBITMQ_HOST'],env['SPRING_RABBITMQ_PORT'])
