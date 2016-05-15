@@ -38,15 +38,15 @@ class BaseBinder(object):
     def constructDLQName(self, name):
         return name + ".dlq";
 
-    def groupedName(self, group, name):
+    def groupedName(self, name, group):
         groupName = group if group else 'default'
-        return '%s.%s' % (groupName, name)
+        return '%s.%s' % (name, group)
 
     def destinationForBindingTarget(self, name, properties):
-        return self.__getBindingProperty__(name, 'destination', properties)
+        return self.__getBindingProperty__(name, 'destination', properties, True)
 
     def groupForBindingTarget(self, name, properties):
-        return self.__getBindingProperty__(name, 'group', properties)
+        return self.__getBindingProperty__(name, 'group', properties, False)
 
     def bindProducer(self, name, properties):
         return self.doBindProducer(name, properties)
@@ -54,11 +54,15 @@ class BaseBinder(object):
     def bindConsumer(self, name, group, properties):
         return self.doBindConsumer(name, group, properties)
 
-    def __getBindingProperty__(self, name, property, properties):
+    def __getBindingProperty__(self, name, property, properties, required):
         try:
             return properties[self.BINDING_PROPERTIES_PREFIX + name + '.' + property]
         except(KeyError):
-            raise RuntimeError('Environment does not contain required property \'{0}\''.format(
+            if required:
+                raise RuntimeError('Environment does not contain required property \'{0}\''.format(
                 self.BINDING_PROPERTIES_PREFIX + name + '.' + property))
+            else:
+                return None
+
 
 

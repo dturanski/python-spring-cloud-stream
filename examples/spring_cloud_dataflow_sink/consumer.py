@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 from spring.cloud.dataflow.binder.rabbit import Binder
 from spring.cloud.dataflow import dataflowapp, components
-
+from spring.cloud import environment
 import pika
 import sys
 
 #
 # Merge the application properties provided by environment variables, command line args, etc.
 #
-env = dataflowapp.env(sys.argv)
+env = environment.env(sys.argv)
 
 #
 # Connect to the Rabbit MQ broker, given by the standard Spring Cloud Dataflow properties 'SPRING_RABBITMQ_HOST' and 'SPRING_RABBITMQ_HOST'
