@@ -25,7 +25,7 @@ dataflow:>module register --name my-processor --type processor --uri docker:dtur
 ````
 dataflow:>stream create ticktock2 --definition "time | my-processor | log --inputType=text/plain" --deploy
 ````
-If all goes well, you should be able to view the log output via the Mesos console [](http://192.168.33.10:5050), if using the Test cluster.
+If all goes well, you should be able to view the log output via the Mesos console [http://192.168.33.10:5050](http://192.168.33.10:5050), if using the Test cluster.
 You should see an app named `ticktock2-log` with a RUNNING status. Drill down on that to view `stdout`. You should see something like:
 
 
