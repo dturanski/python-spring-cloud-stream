@@ -47,7 +47,7 @@ class Binder(BaseBinder):
     def doBindConsumer(self, name, group, properties):
         baseQueueName = None
         if not group:
-            baseQueueName = self.groupedName(name, 'spring-gen.' + uuid.uuid4())
+            baseQueueName = self.groupedName(name, 'spring-gen.' + str(uuid.uuid4()))
         else:
             baseQueueName = self.groupedName(name, group)
 
