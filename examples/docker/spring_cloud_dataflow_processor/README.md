@@ -53,7 +53,7 @@ dataflow:>module register --name consumer-app --type sink --uri docker:dturanski
 ````
 dataflow:>stream create ticktock2 --definition "time | my-processor | consumer-app" --deploy
 ````
-Note, the `--inputType` conversion is not required in this case. If all goes well, you should be able to view the consumer-app output via the Mesos console [](http://192.168.33.10:5050), if using the Test cluster.
+Note, the `--inputType` conversion is not required in this case. If all goes well, you should be able to view the consumer-app output via the Mesos console [http://192.168.33.10:5050](http://192.168.33.10:5050), if using the Test cluster.
 You should see an app named `ticktock2-consumer-app` with a RUNNING status. Drill down on that to view `stdout`. You should see something like:
 
 ````
