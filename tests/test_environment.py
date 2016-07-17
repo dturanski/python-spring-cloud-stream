@@ -42,3 +42,5 @@ class TestEnvironment(unittest.TestCase):
         self.assertEquals('ticktock', env['spring.cloud.stream.bindings.output.producer.requiredGroups'])
         self.assertEquals('ticktock.time', env['spring.cloud.stream.bindings.output.destination'])
 
+if __name__ == '__main__':
+    unittest.main()
