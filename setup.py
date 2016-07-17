@@ -4,15 +4,16 @@
 from setuptools import setup, find_packages
 
 setup(name='spring-cloud-dataflow',
-      version='0.1.0',
-      packages=find_packages(),
+      version = '0.1.0',
+      packages = find_packages(exclude=['tests']),
+      test_suite = 'tests',
       description = 'Spring Cloud Dataflow Binders',
       long_description = 'Spring Cloud Dataflow Binders for Python',
       url = 'https://github.com/dturanski/python-dataflow-binder',
-      author='David Turanski',
-      author_email='dturanski@pivotal.io',
+      author = 'David Turanski',
+      author_email = 'dturanski@pivotal.io',
       license='Apache 2.0',
-      classifiers=[
+      classifiers = [
             # How mature is this project? Common values are
             #   3 - Alpha
             #   4 - Beta
@@ -31,5 +32,5 @@ setup(name='spring-cloud-dataflow',
             'Programming Language :: Python :: 2',
             'Programming Language :: Python :: 2.7'
       ],
-      install_requires=['pika','kafka-python'],
+      install_requires = ['pika','kafka-python'],
       )
