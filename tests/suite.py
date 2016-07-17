@@ -14,17 +14,8 @@ Copyright 2016 the original author or authors.
    limitations under the License.
 """
 import unittest
-import test_cf
-import test_environment
-import test_types
 
-def suite():
-    test_suite = unittest.TestSuite()
-    test_suite.addTest(unittest.makeSuite(test_cf.TestCfApp))
-    test_suite.addTest(unittest.makeSuite(test_environment.TestEnvironment))
-    test_suite.addTest(unittest.makeSuite(test_types.TestTypes))
-    return test_suite
-
-
+test_loader = unittest.defaultTestLoader
+test_suite = test_loader.discover('.')
 runner=unittest.TextTestRunner()
-runner.run(suite())
+runner.run(test_suite)
