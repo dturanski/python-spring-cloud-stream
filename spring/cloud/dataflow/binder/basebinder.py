@@ -12,55 +12,77 @@ Copyright 2016 the original author or authors.
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+
+
+consumer:
+   systemEnvironment: {
+
+INSTANCE_INDEX: "0",
+spring.cloud.stream.bindings.input.consumer.partitioned: "true",
+spring.cloud.stream.instanceCount: "3",
+spring.cloud.stream.bindings.input.group: "ticktock",
+},
+
+consumer: {
+}
+
+producer:
+
+systemEnvironment: {
+
+INSTANCE_INDEX: "0",
+spring.cloud.stream.bindings.output.producer.partitionCount: "3",
+spring.cloud.stream.bindings.output.producer.partitionKeyExpression: "payload.subString(payload.lastIndexOf(':')+1)",
+},
+
 """
 import abc
 
+class BindingProperties:
+    BINDING_PROPERTIES_PREFIX = 'spring.cloud.stream.bindings.'
 
 class BaseBinder(object):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self):
-        self.BINDING_PROPERTIES_PREFIX = 'spring.cloud.stream.bindings.'
-
     @abc.abstractmethod
-    def doBindProducer(self, name, properties):
+    def __bind_producer__(self, name, properties):
         """Subclasses must provide implementation"""
         return
 
     @abc.abstractmethod
-    def doBindConsumer(self, name, group, properties):
+    def __bind_consumer__(self, name, group, properties):
         """Subclasses must provide implementation"""
         return
 
-    def applyPrefix(self, prefix, name):
+    def __apply_prefix__(self, prefix, name):
         return prefix + name;
 
-    def constructDLQName(self, name):
+    def __construct__dlq__name(self, name):
         return name + ".dlq";
 
-    def groupedName(self, name, group):
+    def __grouped_name__(self, name, group):
         groupName = group if group else 'default'
         return '%s.%s' % (name, group)
 
-    def destinationForBindingTarget(self, name, properties):
+    def __destination_for_binding_target__(self, name, properties):
         return self.__getBindingProperty__(name, 'destination', properties, True)
 
-    def groupForBindingTarget(self, name, properties):
+    def __group_for_binding_target__(self, name, properties):
         return self.__getBindingProperty__(name, 'group', properties, False)
 
-    def bindProducer(self, name, properties):
-        return self.doBindProducer(name, properties)
+    def bind_producer(self, name, properties):
+        return self.__bind_producer__(name, properties)
 
-    def bindConsumer(self, name, group, properties):
-        return self.doBindConsumer(name, group, properties)
+    def bind_consumer(self, name, group, properties):
+        return self.__bind_consumer__(name, group, properties)
 
     def __getBindingProperty__(self, name, property, properties, required):
         try:
-            return properties[self.BINDING_PROPERTIES_PREFIX + name + '.' + property]
+            return properties[BaseBinder.BINDING_PROPERTIES_PREFIX + name + '.' + property]
         except(KeyError):
             if required:
                 raise RuntimeError('Environment does not contain required property \'{0}\''.format(
-                self.BINDING_PROPERTIES_PREFIX + name + '.' + property))
+                    BaseBinder.BINDING_PROPERTIES_PREFIX + name + '.' + property))
             else:
                 return None
 

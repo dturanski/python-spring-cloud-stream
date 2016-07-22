@@ -24,7 +24,7 @@ class Binder(BaseBinder):
         self.connection = connection
         self.RABBIT_PROPERTIES_PREFIX = 'spring.cloud.stream.rabbit.'
 
-    def doBindProducer(self, name, properties):
+    def __bind_producer__(self, name, properties):
         groups = properties[self.BINDING_PROPERTIES_PREFIX + 'output.producer.requiredGroups'].split(',')
         # TODO: durable passed as property
         # TODO: handle partitioning
@@ -32,7 +32,7 @@ class Binder(BaseBinder):
         # TODO Non-partitioned routing key = '#'
         channel = self.connection.channel()
         prefix = self.__getRabbitProperty(properties, 'prefix')
-        exchangeName = self.applyPrefix(prefix, name)
+        exchangeName = self.__apply_prefix__(prefix, name)
 
         channel.exchange_declare(exchange=exchangeName,
                                  type='topic', durable=True)
@@ -47,20 +47,20 @@ class Binder(BaseBinder):
 
         return ProducerBinding(channel, name)
 
-    def doBindConsumer(self, name, group, properties):
+    def __bind_consumer__(self, name, group, properties):
         baseQueueName = None
         if not group:
-            baseQueueName = self.groupedName(name, 'spring-gen.' + str(uuid.uuid4()))
+            baseQueueName = self.__grouped_name__(name, 'spring-gen.' + str(uuid.uuid4()))
         else:
-            baseQueueName = self.groupedName(name, group)
+            baseQueueName = self.__grouped_name__(name, group)
 
         channel = self.connection.channel()
         prefix = self.__getRabbitProperty(properties, 'prefix')
-        exchangeName = self.applyPrefix(prefix, name)
+        exchangeName = self.__apply_prefix__(prefix, name)
         channel.exchange_declare(exchange=exchangeName,
                                  type='topic', durable=True)
 
-        queueName = self.applyPrefix(prefix, baseQueueName)
+        queueName = self.__apply_prefix__(prefix, baseQueueName)
 
         channel.queue_declare(queue=queueName, durable=True)
 

@@ -19,14 +19,14 @@ from spring.cloud.dataflow import components
 def bind(target, binder, properties):
     for name, bindingTarget in __get_binding_targets__(target).iteritems():
         if bindingTarget.type == 'output':
-            destination = binder.destinationForBindingTarget(name, properties)
-            binding = binder.bindProducer(destination, properties)
+            destination = binder.__destination_for_binding_target__(name, properties)
+            binding = binder.bind_producer(destination, properties)
             bindingTarget.send = binding.send
 
         elif bindingTarget.type == 'input':
-            group = binder.groupForBindingTarget(name, properties)
-            destination = binder.destinationForBindingTarget(name, properties)
-            binding = binder.bindConsumer(destination, group, properties)
+            group = binder.__group_for_binding_target__(name, properties)
+            destination = binder.__destination_for_binding_target__(name, properties)
+            binding = binder.bind_consumer(destination, group, properties)
             bindingTarget.receive = binding.receive
 
 def __get_binding_targets__(object):
