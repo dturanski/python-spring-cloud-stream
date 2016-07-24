@@ -3,8 +3,8 @@ import sys
 
 import pika
 
-from spring.cloud.dataflow import dataflowapp, components
-from spring.cloud.dataflow.binder.rabbit import Binder
+from spring.cloud.stream import streamapp, components
+from spring.cloud.stream.binder.rabbit import Binder
 from spring.cloud import environment
 
 env = environment.env(sys.argv)
@@ -17,7 +17,7 @@ connectionUrl = 'amqp://localhost:5672'
 connection = pika.BlockingConnection(pika.URLParameters(connectionUrl))
 
 sink = components.Sink()
-dataflowapp.bind(sink,Binder(connection),env)
+streamapp.bind(sink, Binder(connection), env)
 
 def callback(channel, method, properties, body):
     print(" [x] Received %r" % body, properties)

@@ -14,7 +14,7 @@ Copyright 2016 the original author or authors.
    limitations under the License.
 """
 
-from spring.cloud.dataflow import components
+from spring.cloud.stream import components
 
 def bind(target, binder, properties):
     for name, bindingTarget in __get_binding_targets__(target).iteritems():

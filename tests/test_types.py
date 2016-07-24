@@ -3,7 +3,7 @@ import sys
 import os
 
 sys.path.insert(0, os.path.abspath('..'))
-from spring.cloud.dataflow import components
+from spring.cloud.stream import components
 
 class TestTypes(unittest.TestCase):
     def setUp(self):

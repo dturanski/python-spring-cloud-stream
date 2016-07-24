@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-from spring.cloud.dataflow.binder.rabbit import Binder
-from spring.cloud.dataflow import dataflowapp, components
+from spring.cloud.stream.binder.rabbit import Binder
+from spring.cloud.stream import streamapp, components
 from spring.cloud import environment, cf
 
 import pika
@@ -26,7 +26,7 @@ try:
     connection = pika.BlockingConnection(pika.URLParameters(connectionUrl))
 
     sink = components.Sink()
-    dataflowapp.bind(sink,Binder(connection),env)
+    streamapp.bind(sink, Binder(connection), env)
 
     def callback(channel, method, properties, body):
       print(" [x] Received %r" % body, properties)

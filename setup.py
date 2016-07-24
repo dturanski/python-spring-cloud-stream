@@ -3,13 +3,13 @@
 #
 from setuptools import setup, find_packages
 
-setup(name='spring-cloud-dataflow',
+setup(name='spring-cloud-stream',
       version = '0.1.0',
-      packages = find_packages(exclude=['tests']),
+      packages = find_packages(exclude=['tests','tests.*']),
       test_suite = 'tests',
-      description = 'Spring Cloud Dataflow Binders',
-      long_description = 'Spring Cloud Dataflow Binders for Python',
-      url = 'https://github.com/dturanski/python-dataflow-binder',
+      description = 'Spring Cloud Stream for Python',
+      long_description = 'Spring Cloud Stream for Python',
+      url = 'https://github.com/dturanski/python-spring-cloud-stream',
       author = 'David Turanski',
       author_email = 'dturanski@pivotal.io',
       license='Apache 2.0',
@@ -32,5 +32,5 @@ setup(name='spring-cloud-dataflow',
             'Programming Language :: Python :: 2',
             'Programming Language :: Python :: 2.7'
       ],
-      install_requires = ['pika','kafka-python'],
+      install_requires = ['pika','kafka-python','jsonpath_rw'],
       )
