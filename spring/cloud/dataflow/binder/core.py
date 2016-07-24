@@ -40,6 +40,9 @@ import abc
 
 class BindingProperties:
     BINDING_PROPERTIES_PREFIX = 'spring.cloud.stream.bindings.'
+    def __init__(self,properties):
+        self.properties=properties
+
 
 class BaseBinder(object):
     __metaclass__ = abc.ABCMeta

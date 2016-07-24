@@ -15,7 +15,7 @@ Copyright 2016 the original author or authors.
 """
 import uuid
 
-from  spring.cloud.dataflow.binder.basebinder import BaseBinder
+from  spring.cloud.dataflow.binder.core import BaseBinder
 
 # TODO: Autobind DLQ
 class Binder(BaseBinder):
