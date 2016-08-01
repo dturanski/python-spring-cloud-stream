@@ -15,7 +15,7 @@ Copyright 2016 the original author or authors.
 """
 import uuid
 
-from  spring.cloud.stream.binder.core import BaseBinder
+from  spring.cloud.stream.binder.core import BaseBinder, BindingProperties
 
 # TODO: Autobind DLQ
 class Binder(BaseBinder):
@@ -25,7 +25,7 @@ class Binder(BaseBinder):
         self.RABBIT_PROPERTIES_PREFIX = 'spring.cloud.stream.rabbit.'
 
     def __bind_producer__(self, name, properties):
-        groups = properties[self.BINDING_PROPERTIES_PREFIX + 'output.producer.requiredGroups'].split(',')
+        groups = properties[BindingProperties.BINDING_PROPERTIES_PREFIX + 'output.producer.requiredGroups'].split(',')
         # TODO: durable passed as property
         # TODO: handle partitioning
         # TODO: Apply prefix to exchange name passed in properties?

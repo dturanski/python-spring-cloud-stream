@@ -81,11 +81,11 @@ class BaseBinder(object):
 
     def __getBindingProperty__(self, name, property, properties, required):
         try:
-            return properties[BaseBinder.BINDING_PROPERTIES_PREFIX + name + '.' + property]
+            return properties[BindingProperties.BINDING_PROPERTIES_PREFIX + name + '.' + property]
         except(KeyError):
             if required:
                 raise RuntimeError('Environment does not contain required property \'{0}\''.format(
-                    BaseBinder.BINDING_PROPERTIES_PREFIX + name + '.' + property))
+                    BindingProperties.BINDING_PROPERTIES_PREFIX + name + '.' + property))
             else:
                 return None
 
