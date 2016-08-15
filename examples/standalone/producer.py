@@ -17,7 +17,7 @@ connectionUrl = 'amqp://localhost:5672'
 connection = pika.BlockingConnection(pika.URLParameters(connectionUrl))
 
 source = components.Source()
-streamapp.bind(source, Binder(connection), env)
+source.bind(Binder(connection), env)
 
 source.send('Hello World!')
 

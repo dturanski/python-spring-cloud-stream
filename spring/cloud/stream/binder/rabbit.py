@@ -19,13 +19,15 @@ from  spring.cloud.stream.binder.core import BaseBinder, BindingProperties
 
 # TODO: Autobind DLQ
 class Binder(BaseBinder):
+    RABBIT_PROPERTIES_PREFIX = 'spring.cloud.stream.rabbit.'
+
     def __init__(self, connection):
         BaseBinder.__init__(self)
         self.connection = connection
-        self.RABBIT_PROPERTIES_PREFIX = 'spring.cloud.stream.rabbit.'
 
-    def __bind_producer__(self, name, properties):
-        groups = properties[BindingProperties.BINDING_PROPERTIES_PREFIX + 'output.producer.requiredGroups'].split(',')
+
+    def __bind_producer__(self, name, producer, properties):
+        groups = properties[BindingProperties.BINDING_PROPERTIES_PREFIX + name+ '.producer.requiredGroups'].split(',')
         # TODO: durable passed as property
         # TODO: handle partitioning
         # TODO: Apply prefix to exchange name passed in properties?
@@ -45,9 +47,9 @@ class Binder(BaseBinder):
                                queue=queueName,
                                routing_key=name)
 
-        return ProducerBinding(channel, name)
+        producer.send =  ProducerBinding(channel, name).send
 
-    def __bind_consumer__(self, name, group, properties):
+    def __bind_consumer__(self, name, group, consumer, properties):
         baseQueueName = None
         if not group:
             baseQueueName = self.__grouped_name__(name, 'spring-gen.' + str(uuid.uuid4()))
@@ -68,11 +70,11 @@ class Binder(BaseBinder):
                            queue=queueName,
                            routing_key='#')
 
-        return ConsumerBinding(channel, queueName)
+        consumer.receive = ConsumerBinding(channel, queueName).receive
 
     def __getRabbitProperty(self, properties, name):
         try:
-            return properties[self.RABBIT_PROPERTIES_PREFIX + name]
+            return properties[Binder.RABBIT_PROPERTIES_PREFIX + name]
         except:
             return ''
 
@@ -91,11 +93,11 @@ class ProducerBinding(Binding):
     def __init__(self, channel, destination):
         Binding.__init__(self, channel, destination)
 
-    def send(self, message):
+    def send(self, message, properties=None):
         self.channel.basic_publish(exchange=self.destination,
                                    routing_key=self.destination,
-                                   body=message)
-
+                                   body=message,
+                                   properties=properties)
 
 class ConsumerBinding(Binding):
     def __init__(self, channel, destination):

@@ -40,6 +40,7 @@ import abc
 
 class BindingProperties:
     BINDING_PROPERTIES_PREFIX = 'spring.cloud.stream.bindings.'
+
     def __init__(self,properties):
         self.properties=properties
 
@@ -47,14 +48,29 @@ class BindingProperties:
 class BaseBinder(object):
     __metaclass__ = abc.ABCMeta
 
+    def bind_producer(self, name, producer, producerProperties):
+        return self.__bind_producer__(name, producer, producerProperties)
+
+    def bind_consumer(self, name, group, consumer, consumerProperties):
+        return self.__bind_consumer__(name, group, consumer, consumerProperties)
+
     @abc.abstractmethod
-    def __bind_producer__(self, name, properties):
-        """Subclasses must provide implementation"""
+    def __bind_producer__(self, name, producer, producerProperties):
+        """Subclasses must provide implementation.
+           'name' is the logical identity of the message target
+           'producer' is the object to be bound. The object will be provided with a send(message) method
+        """
         return
 
     @abc.abstractmethod
-    def __bind_consumer__(self, name, group, properties):
-        """Subclasses must provide implementation"""
+    def __bind_consumer__(self, name, group, consumer, consumerProperties):
+        """Subclasses must provide implementation.
+           'name' is the logical identity of the message source
+        'group' is the consumer group to which this consumer belongs - subscriptions are shared among consumers
+	        in the same group (a None or empty String, must be treated as an anonymous group that doesn't share
+	        the subscription with any other consumer)
+	    'consumer' is the object to be bound. The object will be proided with a receive(callback) method
+        """
         return
 
     def __apply_prefix__(self, prefix, name):
@@ -73,11 +89,6 @@ class BaseBinder(object):
     def __group_for_binding_target__(self, name, properties):
         return self.__getBindingProperty__(name, 'group', properties, False)
 
-    def bind_producer(self, name, properties):
-        return self.__bind_producer__(name, properties)
-
-    def bind_consumer(self, name, group, properties):
-        return self.__bind_consumer__(name, group, properties)
 
     def __getBindingProperty__(self, name, property, properties, required):
         try:

@@ -22,6 +22,7 @@ from jsonpath_rw import parse
 import json
 
 sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.dirname(__file__))
 
 class TestPartition(unittest.TestCase):
     def __init__(self, *args, **kwargs):
@@ -39,8 +40,6 @@ class TestPartition(unittest.TestCase):
     def test_simple(self):
         _selector = __import__('foo')
         func = getattr(_selector, 'bar')
-
-
 
         body = '{"id":"abcde"}'
         self.assertEquals('abcde-hello',func(self.body,self.properties))

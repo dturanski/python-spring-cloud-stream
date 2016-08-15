@@ -16,6 +16,12 @@ class TestEnvironment(unittest.TestCase):
         self.assertEquals('ticktock', env['spring.cloud.stream.bindings.output.producer.requiredGroups'])
         self.assertEquals('ticktock.time', env['spring.cloud.stream.bindings.output.destination'])
 
+        output_props = environment.config_props(env,'spring.cloud.stream.bindings.output')
+        self.assertEquals('ticktock',output_props['producer.requiredGroups'])
+        self.assertEquals('ticktock.time',output_props['destination'])
+
+
+
     def test_default_env_is_os_env(self):
         del os.environ['SPRING_APPLICATION_JSON']
         env = environment.env(sys.argv)

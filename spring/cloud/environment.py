@@ -36,3 +36,17 @@ def __parse_spring_application_json__():
     except:
         pass
     return environment
+
+def config_props(env,prefix):
+    props = {}
+    for key, value in env.iteritems():
+        pre = prefix + '.'
+        if (key.find(pre) == 0):
+            suffix = key[len(pre):]
+            props[suffix] = value
+    return props
+
+
+
+
+

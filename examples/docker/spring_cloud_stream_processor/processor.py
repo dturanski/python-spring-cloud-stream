@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from spring.cloud.stream.binder.rabbit import Binder
-from spring.cloud.stream import streamapp, components
+from spring.cloud.stream import components
 from spring.cloud import environment
 import pika
 import sys
@@ -22,7 +22,7 @@ connectionUrl = 'amqp://{0}:{1}'.format(env['SPRING_RABBITMQ_HOST'], env['SPRING
 connection = pika.BlockingConnection(pika.URLParameters(connectionUrl))
 
 processor = components.Processor()
-streamapp.bind(processor, Binder(connection), env)
+processor.bind(Binder(connection), env)
 
 
 print "bindings created."

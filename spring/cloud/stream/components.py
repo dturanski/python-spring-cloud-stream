@@ -14,30 +14,43 @@ Copyright 2016 the original author or authors.
    limitations under the License.
 """
 class BindingTarget:
-    def __init__(self,name,type):
+    def __init__(self,name):
         self.name = name
-        self.type = type
-    def send(self):
-        pass
-    def receive(self):
-        pass
 
-class Source:
+
+class Source(BindingTarget):
     def __init__(self):
-        self.output = BindingTarget('output','output')
+        BindingTarget.__init__(self,'output')
 
-    def send(self, message):
-        return self.output.send(message)
+        def bind(self, binder, properties):
+            #TODO - Do not use private method here
+            destination = binder.__destination_for_binding_target__(self.name, properties)
+            binding = binder.bind_producer(destination, properties)
+            self.send = binding.send
 
-class Sink:
+class Sink(BindingTarget):
     def __init__(self):
-        self.input =  BindingTarget('input','input')
+        BindingTarget.__init__(self, 'input')
 
-    def receive(self, callback):
-        return self.input.receive(callback)
+    def bind(self, binder, properties):
+        # TODO - Do not use private methods here
+        group = binder.__group_for_binding_target__(self.name, properties)
+        destination = binder.__destination_for_binding_target__(self.name, properties)
+        binding = binder.bind_consumer(destination, group, properties)
+        self.receive = binding.receive
 
-#TODO: clean up inheritance
 class Processor(Source, Sink):
     def __init__(self):
-        self.input = BindingTarget('input','input')
-        self.output = BindingTarget('output','output')
+        self.input = Sink()
+        self.output = Source()
+
+    def bind(self, binder, properties):
+        self.input.bind(binder,properties)
+        self.output.bind(binder,properties)
+
+    def send(self, message):
+        self.output.send(message)
+
+    def receive(self, callback):
+        return self.input.receive(callback);
+
