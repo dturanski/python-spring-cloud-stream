@@ -20,7 +20,7 @@ connection = pika.BlockingConnection(pika.URLParameters(connectionUrl))
 # Declare a sink and bind it to Rabbit MQ transport using required Spring Cloud Stream binding properties provided by the Dataflow server
 #
 sink = components.Sink()
-sink.bind(Binder(connection), env)
+sink.bind(Binder(connection, env))
 
 #
 # Provide a callback function to process each message received in the stream.

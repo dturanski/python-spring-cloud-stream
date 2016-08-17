@@ -29,11 +29,15 @@ def env(args, configfilepath='./application.cfg'):
 
 def __parse_command_line__(args):
     environment = {}
-    for arg in args:
-        if (arg.startswith('--')):
-            (key, value) = arg.split("=")
-            key = key.replace('--', '')
-            environment[key] = value
+    if (args and len(args) > 0):
+        for arg in args:
+            if (arg.startswith('--')):
+                try:
+                    (key, value) = arg.split("=")
+                    key = key.replace('--', '')
+                    environment[key] = value
+                except:
+                    logger.warn('cannot not parse command line argument ' + arg)
     return environment
 
 def __parse_spring_application_json__():

@@ -37,39 +37,48 @@ spring.cloud.stream.bindings.output.producer.partitionKeyExpression: "payload.su
 
 """
 import abc
-
-class BindingProperties:
-    BINDING_PROPERTIES_PREFIX = 'spring.cloud.stream.bindings.'
-
-    def __init__(self,properties):
-        self.properties=properties
-
+from spring.cloud.stream.binding import BindingProperties
 
 class BaseBinder(object):
     __metaclass__ = abc.ABCMeta
 
-    def bind_producer(self, name, producer, producerProperties):
-        return self.__bind_producer__(name, producer, producerProperties)
+    def __init__(self, env):
+        self.env = env
+        self.__binding_properties__ = BindingProperties(env)
 
-    def bind_consumer(self, name, group, consumer, consumerProperties):
-        return self.__bind_consumer__(name, group, consumer, consumerProperties)
+    def binding_properties(self, channel_name):
+        return self.__binding_properties__.binding_properties(channel_name)
+
+    def producer_properties(self, producer_name):
+        return self.__binding_properties__.producer_bindings(producer_name)
+
+    def consumer_properties(self, consumer_name):
+        return self.__binding_properties__.consumer_bindings(consumer_name)
+
+    def bind_producer(self, name, producer, producer_name='output'):
+        return self.__bind_producer__(name, producer, self.producer_properties(producer_name))
+
+    def bind_consumer(self, name, group, consumer, consumer_name='input'):
+        return self.__bind_consumer__(name, group, consumer, self.consumer_properties(consumer_name))
 
     @abc.abstractmethod
-    def __bind_producer__(self, name, producer, producerProperties):
+    def __bind_producer__(self, name, producer, producer_properties):
         """Subclasses must provide implementation.
            'name' is the logical identity of the message target
            'producer' is the object to be bound. The object will be provided with a send(message) method
+           'producer_properties' are the properties for bound to the producer
         """
         return
 
     @abc.abstractmethod
-    def __bind_consumer__(self, name, group, consumer, consumerProperties):
+    def __bind_consumer__(self, name, group, consumer, consumer_properties):
         """Subclasses must provide implementation.
            'name' is the logical identity of the message source
         'group' is the consumer group to which this consumer belongs - subscriptions are shared among consumers
 	        in the same group (a None or empty String, must be treated as an anonymous group that doesn't share
 	        the subscription with any other consumer)
 	    'consumer' is the object to be bound. The object will be proided with a receive(callback) method
+	    'consumer_properties' are the properties for bound to the consumer
         """
         return
 
@@ -82,23 +91,6 @@ class BaseBinder(object):
     def __grouped_name__(self, name, group):
         groupName = group if group else 'default'
         return '%s.%s' % (name, group)
-
-    def __destination_for_binding_target__(self, name, properties):
-        return self.__getBindingProperty__(name, 'destination', properties, True)
-
-    def __group_for_binding_target__(self, name, properties):
-        return self.__getBindingProperty__(name, 'group', properties, False)
-
-
-    def __getBindingProperty__(self, name, property, properties, required):
-        try:
-            return properties[BindingProperties.BINDING_PROPERTIES_PREFIX + name + '.' + property]
-        except(KeyError):
-            if required:
-                raise RuntimeError('Environment does not contain required property \'{0}\''.format(
-                    BindingProperties.BINDING_PROPERTIES_PREFIX + name + '.' + property))
-            else:
-                return None
 
 
 

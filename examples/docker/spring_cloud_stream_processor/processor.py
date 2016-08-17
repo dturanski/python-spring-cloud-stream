@@ -22,7 +22,7 @@ connectionUrl = 'amqp://{0}:{1}'.format(env['SPRING_RABBITMQ_HOST'], env['SPRING
 connection = pika.BlockingConnection(pika.URLParameters(connectionUrl))
 
 processor = components.Processor()
-processor.bind(Binder(connection), env)
+processor.bind(Binder(connection, env))
 
 
 print "bindings created."

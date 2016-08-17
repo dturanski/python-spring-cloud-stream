@@ -43,8 +43,10 @@ class BindingProperties:
 
     def producer_bindings(self, producer_name='output'):
         producer_bindings = config_props(self.properties, BindingProperties.BINDINGS_PREFIX + '.' + producer_name + '.' + 'producer')
+        print producer_bindings
         producer_bindings['partitionCount'] = int(producer_bindings.get('partitionCount', 1))
         producer_bindings['headerMode'] = producer_bindings.get('headerMode', 'embeddedHeaders')
+        producer_bindings['name'] = producer_name
         return producer_bindings
 
     def consumer_bindings(self, consumer_name='input'):
@@ -55,6 +57,7 @@ class BindingProperties:
         consumer_bindings['backOffMaxInterval'] = int(consumer_bindings.get('backOffMaxInterval', 10000))
         consumer_bindings['backOffMultiplier'] = float(consumer_bindings.get('backOffMultiplier', 2.0))
         consumer_bindings['partitioned'] = bool(consumer_bindings.get('partitioned',False))
+        consumer_bindings['name'] = consumer_name
         return consumer_bindings
 
 
@@ -77,7 +80,6 @@ class RabbitBindingProperties:
 
     def producer_bindings(self, producer_name='output'):
         producer_bindings = config_props(self.properties, RabbitBindingProperties.PREFIX + '.' + producer_name + '.' + 'producer')
-
         producer_bindings['autoBindDlq'] = bool(producer_bindings.get('autoBindDlq' ,False))
         producer_bindings['batchingEnabled'] = bool(producer_bindings.get('batchingEnabled', False))
         producer_bindings['batchSize'] = int(producer_bindings.get('batchingEnabled', 100))
@@ -87,9 +89,10 @@ class RabbitBindingProperties:
         producer_bindings['deliveryMode'] = producer_bindings.get('deliveryMode', 'PERSISTENT')
         producer_bindings['prefix'] = producer_bindings.get('prefix', '')
         producer_bindings['requestHeaderPatterns'] = producer_bindings.get('requestHeaderPatterns',
-                                                                           '[STANDARD_REQUEST_HEADERS,'*']')
+                                                                           '[STANDARD_REQUEST_HEADERS, \'*\']')
         producer_bindings['replyHeaderPatterns'] = producer_bindings.get('replyHeaderPatterns',
-                                                                           '[STANDARD_REPLY_HEADERS,' * ']')
+                                                                           '[STANDARD_REPLY_HEADERS, \'* \']')
+        producer_bindings['name'] = producer_name
         return producer_bindings
 
     def consumer_bindings(self, consumer_name='input'):
@@ -110,4 +113,5 @@ class RabbitBindingProperties:
         consumer_bindings['republishToDlq'] = bool(consumer_bindings.get('republishToDlq', False))
         consumer_bindings['transacted'] = bool(consumer_bindings.get('transacted', False))
         consumer_bindings['txSize'] = int(consumer_bindings.get('txSize', 1))
+        consumer_bindings['name'] = consumer_name
         return consumer_bindings

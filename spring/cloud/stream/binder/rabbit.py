@@ -15,27 +15,26 @@ Copyright 2016 the original author or authors.
 """
 import uuid
 
-from  spring.cloud.stream.binder.core import BaseBinder, BindingProperties
+from  spring.cloud.stream.binder.core import BaseBinder
+from spring.cloud.stream.binding import RabbitBindingProperties
 
 # TODO: Autobind DLQ
 class Binder(BaseBinder):
-    RABBIT_PROPERTIES_PREFIX = 'spring.cloud.stream.rabbit.'
 
-    def __init__(self, connection):
-        BaseBinder.__init__(self)
+    def __init__(self, connection, env):
+        BaseBinder.__init__(self, env)
         self.connection = connection
+        self.rabbit_properties = RabbitBindingProperties(env)
 
-
-    def __bind_producer__(self, name, producer, properties):
-        groups = properties[BindingProperties.BINDING_PROPERTIES_PREFIX + 'output'+ '.producer.requiredGroups'].split(',')
+    def __bind_producer__(self, name, producer, producer_properties):
+        groups = producer_properties['requiredGroups'].split(',')
         # TODO: durable passed as property
         # TODO: handle partitioning
         # TODO: Apply prefix to exchange name passed in properties?
         # TODO Non-partitioned routing key = '#'
         channel = self.connection.channel()
-        prefix = self.__getRabbitProperty(properties, 'prefix')
-
-        exchangeName = self.__apply_prefix__(prefix, name)
+        producer_name = producer_properties['name']
+        exchangeName = self.__apply_prefix__(self.rabbit_properties.producer_bindings(producer_name)['prefix'], name)
 
         channel.exchange_declare(exchange=exchangeName,
                                  type='topic', durable=True)
@@ -44,13 +43,11 @@ class Binder(BaseBinder):
         for group in groups:
             queueName = exchangeName + '.' + group
             channel.queue_declare(queue=queueName, durable=True)
-            channel.queue_bind(exchange=exchangeName,
-                               queue=queueName,
-                               routing_key=name)
+            channel.queue_bind(exchange=exchangeName, queue=queueName, routing_key=name)
 
         producer.send =  ProducerBinding(channel, name).send
 
-    def __bind_consumer__(self, name, group, consumer, properties):
+    def __bind_consumer__(self, name, group, consumer, consumer_properties):
         baseQueueName = None
         if not group:
             baseQueueName = self.__grouped_name__(name, 'spring-gen.' + str(uuid.uuid4()))
@@ -58,27 +55,18 @@ class Binder(BaseBinder):
             baseQueueName = self.__grouped_name__(name, group)
 
         channel = self.connection.channel()
-        prefix = self.__getRabbitProperty(properties, 'prefix')
+        consumer_name = consumer_properties['name']
+        prefix = self.rabbit_properties.producer_bindings(consumer_name)['prefix']
         exchangeName = self.__apply_prefix__(prefix, name)
-        channel.exchange_declare(exchange=exchangeName,
-                                 type='topic', durable=True)
+        channel.exchange_declare(exchange=exchangeName, type='topic', durable=True)
 
         queueName = self.__apply_prefix__(prefix, baseQueueName)
 
         channel.queue_declare(queue=queueName, durable=True)
 
-        channel.queue_bind(exchange=exchangeName,
-                           queue=queueName,
-                           routing_key='#')
+        channel.queue_bind(exchange=exchangeName, queue=queueName, routing_key='#')
 
         consumer.receive = ConsumerBinding(channel, queueName).receive
-
-    def __getRabbitProperty(self, properties, name):
-        try:
-            return properties[Binder.RABBIT_PROPERTIES_PREFIX + name]
-        except:
-            return ''
-
 
 class Binding:
     def __init__(self, channel, destination):
@@ -95,9 +83,7 @@ class ProducerBinding(Binding):
         Binding.__init__(self, channel, destination)
 
     def send(self, message, properties=None):
-        self.channel.basic_publish(exchange=self.destination,
-                                   routing_key=self.destination,
-                                   body=message,
+        self.channel.basic_publish(exchange=self.destination, routing_key=self.destination, body=message,
                                    properties=properties)
 
 class ConsumerBinding(Binding):

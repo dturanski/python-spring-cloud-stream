@@ -17,7 +17,7 @@ connectionUrl = 'amqp://localhost:5672'
 connection = pika.BlockingConnection(pika.URLParameters(connectionUrl))
 
 sink = components.Sink()
-sink.bind(Binder(connection), env)
+sink.bind(Binder(connection, env))
 
 def callback(channel, method, properties, body):
     print(" [x] Received %r" % body, properties)

@@ -34,6 +34,7 @@ class TestBindingProperties(unittest.TestCase):
         self.assertEquals(0, bindings['instanceIndex'])
         self.assertEquals(1, bindings['instanceCount'])
         self.assertEquals(True, bindings['consumer']['partitioned'])
+        self.assertEquals('ticktock.time', bindings['destination'])
 
     def test_producer_properties(self):
         producer_props = BindingProperties(TestBindingProperties.properties).producer_bindings()
@@ -41,6 +42,7 @@ class TestBindingProperties(unittest.TestCase):
         self.assertEquals('embeddedHeaders', producer_props['headerMode'])
         self.assertEquals('foo()', producer_props['partitionKeyExpression'])
         self.assertEquals(3, producer_props['partitionCount'])
+
 
     def test_consumer_properties(self):
         consumer_props = BindingProperties(TestBindingProperties.properties).consumer_bindings()

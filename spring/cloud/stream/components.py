@@ -13,6 +13,7 @@ Copyright 2016 the original author or authors.
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+from spring.cloud.stream.binding import BindingProperties
 class BindingTarget:
     def __init__(self,name):
         self.name = name
@@ -22,30 +23,28 @@ class Source(BindingTarget):
     def __init__(self):
         BindingTarget.__init__(self,'output')
 
-    def bind(self, binder, properties):
-        #TODO - Do not use private method here
-        destination = binder.__destination_for_binding_target__(self.name, properties)
-        binder.bind_producer(destination, self, properties)
+    def bind(self, binder):
+        destination = binder.binding_properties(self.name)['destination']
+        binder.bind_producer(destination, self)
 
 
 class Sink(BindingTarget):
     def __init__(self):
         BindingTarget.__init__(self, 'input')
 
-    def bind(self, binder, properties):
-        # TODO - Do not use private methods here
-        group = binder.__group_for_binding_target__(self.name, properties)
-        destination = binder.__destination_for_binding_target__(self.name, properties)
-        binder.bind_consumer(destination, group, self, properties)
+    def bind(self, binder):
+        destination = binder.binding_properties(self.name)['destination']
+        group = binder.binding_properties(self.name)['group']
+        binder.bind_consumer(destination, group, self)
 
 class Processor(Source, Sink):
     def __init__(self):
         self.input = Sink()
         self.output = Source()
 
-    def bind(self, binder, properties):
-        self.input.bind(binder,properties)
-        self.output.bind(binder,properties)
+    def bind(self, binder):
+        self.input.bind(binder)
+        self.output.bind(binder)
 
     def send(self, message):
         self.output.send(message)
