@@ -27,13 +27,14 @@ class Binder(BaseBinder):
 
 
     def __bind_producer__(self, name, producer, properties):
-        groups = properties[BindingProperties.BINDING_PROPERTIES_PREFIX + name+ '.producer.requiredGroups'].split(',')
+        groups = properties[BindingProperties.BINDING_PROPERTIES_PREFIX + 'output'+ '.producer.requiredGroups'].split(',')
         # TODO: durable passed as property
         # TODO: handle partitioning
         # TODO: Apply prefix to exchange name passed in properties?
         # TODO Non-partitioned routing key = '#'
         channel = self.connection.channel()
         prefix = self.__getRabbitProperty(properties, 'prefix')
+
         exchangeName = self.__apply_prefix__(prefix, name)
 
         channel.exchange_declare(exchange=exchangeName,

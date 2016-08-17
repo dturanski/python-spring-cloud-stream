@@ -22,11 +22,11 @@ class Source(BindingTarget):
     def __init__(self):
         BindingTarget.__init__(self,'output')
 
-        def bind(self, binder, properties):
-            #TODO - Do not use private method here
-            destination = binder.__destination_for_binding_target__(self.name, properties)
-            binding = binder.bind_producer(destination, properties)
-            self.send = binding.send
+    def bind(self, binder, properties):
+        #TODO - Do not use private method here
+        destination = binder.__destination_for_binding_target__(self.name, properties)
+        binder.bind_producer(destination, self, properties)
+
 
 class Sink(BindingTarget):
     def __init__(self):
@@ -36,8 +36,7 @@ class Sink(BindingTarget):
         # TODO - Do not use private methods here
         group = binder.__group_for_binding_target__(self.name, properties)
         destination = binder.__destination_for_binding_target__(self.name, properties)
-        binding = binder.bind_consumer(destination, group, properties)
-        self.receive = binding.receive
+        binder.bind_consumer(destination, group, self, properties)
 
 class Processor(Source, Sink):
     def __init__(self):

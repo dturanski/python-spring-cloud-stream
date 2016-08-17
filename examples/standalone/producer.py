@@ -3,7 +3,7 @@ import sys
 
 import pika
 
-from spring.cloud.stream import streamapp, components
+from spring.cloud.stream import components
 from spring.cloud.stream.binder.rabbit import Binder
 from spring.cloud import environment
 
@@ -18,7 +18,6 @@ connection = pika.BlockingConnection(pika.URLParameters(connectionUrl))
 
 source = components.Source()
 source.bind(Binder(connection), env)
-
 source.send('Hello World!')
 
 print "sent message!"

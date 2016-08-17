@@ -15,11 +15,20 @@ Copyright 2016 the original author or authors.
 """
 import os
 import json
+import ConfigParser
+import logging
 
-def env(args):
-    environment = os.environ
+logger = logging.getLogger(__name__)
+
+def env(args, configfilepath='./application.cfg'):
+    environment = __read_config_file__(configfilepath)
+    environment.update(os.environ)
     environment.update(__parse_spring_application_json__())
+    environment.update(__parse_command_line__(args))
+    return environment
 
+def __parse_command_line__(args):
+    environment = {}
     for arg in args:
         if (arg.startswith('--')):
             (key, value) = arg.split("=")
@@ -37,14 +46,20 @@ def __parse_spring_application_json__():
         pass
     return environment
 
-def config_props(env,prefix):
-    props = {}
-    for key, value in env.iteritems():
-        pre = prefix + '.'
-        if (key.find(pre) == 0):
-            suffix = key[len(pre):]
-            props[suffix] = value
-    return props
+def __read_config_file__(filepath):
+    """Parse python config file and convert to properties"""
+    filepath = os.path.abspath(filepath)
+    logger.info('reading config file [' + filepath + ']' + ' file exists: ' + str(os.path.exists(filepath)))
+    environment = {}
+    config = ConfigParser.ConfigParser()
+    config.optionxform = str
+    config.read(filepath)
+    for section in config.sections():
+        for item in config.items(section):
+            key = section + '.' + item[0]
+            environment[key] = item[1]
+    return environment
+
 
 
 

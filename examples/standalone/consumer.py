@@ -3,7 +3,7 @@ import sys
 
 import pika
 
-from spring.cloud.stream import streamapp, components
+from spring.cloud.stream import components
 from spring.cloud.stream.binder.rabbit import Binder
 from spring.cloud import environment
 
