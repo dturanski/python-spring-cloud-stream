@@ -42,6 +42,7 @@ class Binder(BaseBinder):
         # TODO: Apply prefix to queue name passed in properties?
         for group in groups:
             queueName = exchangeName + '.' + group
+            # TODO: Handle non durable option
             channel.queue_declare(queue=queueName, durable=True)
             channel.queue_bind(exchange=exchangeName, queue=queueName, routing_key=name)
 

@@ -50,8 +50,10 @@ class TestEnvironment(unittest.TestCase):
     def test_include_app_config_file(self):
         env = environment.env([], configfilepath=os.path.abspath(__file__) + '/../application-test.cfg')
         self.assertEquals('group1,group2', env['spring.cloud.stream.bindings.output.producer.requiredGroups'])
-        self.assertEquals('True', env['spring.cloud.stream.rabbit.bindings.output.autoBindDlq'])
-        self.assertEquals('5', env['spring.cloud.stream.rabbit.bindings.input.prefetch'])
+        self.assertEquals('True', env['spring.cloud.stream.rabbit.bindings.output.producer.autoBindDlq'])
+        self.assertEquals('prefix-',env['spring.cloud.stream.rabbit.bindings.output.producer.prefix'])
+
+        self.assertEquals('5', env['spring.cloud.stream.rabbit.bindings.input.consumer.prefetch'])
 
     def test_env_overrides_app_config_file(self):
         os.environ[

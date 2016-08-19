@@ -51,7 +51,7 @@ class TestPartition(unittest.TestCase):
 
         _module = selector_function_ref[index+1:]
         _package = selector_function_ref[:index]
-        _selector = __import__(_package, globals(), locals(), [_module], -1)
+        _selector = __import__(_package, globals(), locals(), [_module])
 
         func = getattr(_selector, _module)
         self.assertEquals('123-value', func(self.body, self.properties))

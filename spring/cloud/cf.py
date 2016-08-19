@@ -24,7 +24,7 @@ class App:
     def service(self, name):
         try:
             vcap_services = json.loads(self.env['VCAP_SERVICES'])
-            for (serviceName, serviceInstances) in vcap_services.iteritems():
+            for (serviceName, serviceInstances) in vcap_services.items():
                 for service in serviceInstances:
                     if (service['name'] == name):
                         return service

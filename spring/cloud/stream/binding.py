@@ -43,7 +43,6 @@ class BindingProperties:
 
     def producer_bindings(self, producer_name='output'):
         producer_bindings = config_props(self.properties, BindingProperties.BINDINGS_PREFIX + '.' + producer_name + '.' + 'producer')
-        print producer_bindings
         producer_bindings['partitionCount'] = int(producer_bindings.get('partitionCount', 1))
         producer_bindings['headerMode'] = producer_bindings.get('headerMode', 'embeddedHeaders')
         producer_bindings['name'] = producer_name
@@ -64,7 +63,7 @@ class BindingProperties:
 def config_props(properties, prefix):
     props = {}
     pre = prefix + '.'
-    for key, value in properties.iteritems():
+    for key, value in properties.items():
         if (key.find(pre) == 0):
             suffix = key[len(pre):]
             # don't include compound names (e.g., producer.foo)

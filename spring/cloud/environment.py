@@ -15,7 +15,7 @@ Copyright 2016 the original author or authors.
 """
 import os
 import json
-import ConfigParser
+import configparser
 import logging
 
 logger = logging.getLogger(__name__)
@@ -55,7 +55,7 @@ def __read_config_file__(filepath):
     filepath = os.path.abspath(filepath)
     logger.info('reading config file [' + filepath + ']' + ' file exists: ' + str(os.path.exists(filepath)))
     environment = {}
-    config = ConfigParser.ConfigParser()
+    config = configparser.ConfigParser()
     config.optionxform = str
     config.read(filepath)
     for section in config.sections():

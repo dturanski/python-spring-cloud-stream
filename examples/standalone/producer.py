@@ -20,7 +20,7 @@ source = components.Source()
 source.bind(Binder(connection, env))
 source.send('Hello World!')
 
-print "sent message!"
+print ("sent message!")
 connection.close()
 
 
