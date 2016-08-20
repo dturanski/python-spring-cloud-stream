@@ -4,7 +4,7 @@ Python Spring Cloud Stream
 This is a Python implementation of Spring Cloud Stream to support
 deploying native Python scripts as Spring Cloud Stream 
 applications. Please review the 
-`examples<https://github.com/dturanski/python-spring-cloud-stream/tree/master/examples>` 
+`examples <https://github.com/dturanski/python-spring-cloud-stream/tree/master/examples>`_ 
 directory for details on how to use this module.
 
 This module provides compatibility with Spring Cloud Stream bindings 
@@ -26,6 +26,6 @@ To install the Spring Cloud Stream module:
 * You may need to change permissions or run the following as sudo
 
 
-$pip install setuptools
-$python ./setup.py install
+|`$pip install setuptools`
+|`$python ./setup.py install`
 
