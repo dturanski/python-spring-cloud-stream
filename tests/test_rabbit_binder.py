@@ -29,7 +29,7 @@ class TestBinder(unittest.TestCase):
         pika.BlockingConnection.channel = mock.MagicMock(return_value=self.channel)
         self.binder = Binder(
                     self.connection,
-                    env=environment.env([], configfilepath=os.path.abspath(__file__) + '/../application-test.cfg'))
+                    env=environment.env([], os.path.abspath(__file__) + '/../application-test.cfg'))
 
     def test_bind_producer(self):
         producer = Source()

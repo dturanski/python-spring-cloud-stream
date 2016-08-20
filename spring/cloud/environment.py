@@ -20,8 +20,20 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def env(args, configfilepath='./application.cfg'):
-    environment = __read_config_file__(configfilepath)
+def env(args, sources=['./application.cfg']):
+    environment = {}
+    if (not isinstance(sources, list)):
+        sources = [sources]
+
+    for source in sources:
+        config = None
+        if (isinstance(source,str)):
+            config = __read_config_file__(source)
+        elif (isinstance(source, configparser.ConfigParser)):
+            config = source
+        if (config):
+            environment.update(__merge_config__(config))
+
     environment.update(os.environ)
     environment.update(__parse_spring_application_json__())
     environment.update(__parse_command_line__(args))
@@ -50,14 +62,21 @@ def __parse_spring_application_json__():
         pass
     return environment
 
+
 def __read_config_file__(filepath):
+    config = None
+    filepath = os.path.abspath(str(filepath))
+    if (os.path.exists(filepath)):
+        logger.info('reading config file [' + filepath + ']')
+        open(filepath)
+        config = configparser.ConfigParser()
+        config.optionxform = str
+        config.read(filepath)
+    return config
+
+def __merge_config__(config):
     """Parse python config file and convert to properties"""
-    filepath = os.path.abspath(filepath)
-    logger.info('reading config file [' + filepath + ']' + ' file exists: ' + str(os.path.exists(filepath)))
     environment = {}
-    config = configparser.ConfigParser()
-    config.optionxform = str
-    config.read(filepath)
     for section in config.sections():
         for item in config.items(section):
             key = section + '.' + item[0]

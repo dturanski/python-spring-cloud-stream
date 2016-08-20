@@ -1,7 +1,7 @@
 import unittest
 import sys
 import os
-
+import configparser
 
 sys.path.insert(0, os.path.abspath('..'))
 sys.path.insert(0, os.path.dirname(__file__))
@@ -48,7 +48,7 @@ class TestEnvironment(unittest.TestCase):
         self.assertEqual('ticktock.time', env['spring.cloud.stream.bindings.output.destination'])
 
     def test_include_app_config_file(self):
-        env = environment.env([], configfilepath=os.path.abspath(__file__) + '/../application-test.cfg')
+        env = environment.env([], [os.path.abspath(__file__) + '/../application-test.cfg'])
         self.assertEqual('group1,group2', env['spring.cloud.stream.bindings.output.producer.requiredGroups'])
         self.assertEqual('True', env['spring.cloud.stream.rabbit.bindings.output.producer.autoBindDlq'])
         self.assertEqual('prefix-',env['spring.cloud.stream.rabbit.bindings.output.producer.prefix'])
@@ -58,8 +58,24 @@ class TestEnvironment(unittest.TestCase):
     def test_env_overrides_app_config_file(self):
         os.environ[
             'SPRING_APPLICATION_JSON'] = '{"spring.cloud.stream.bindings.output.producer.requiredGroups":"override"}'
-        env = environment.env([],configfilepath=os.path.abspath(__file__) + '/../application-test.cfg')
+        env = environment.env([], os.path.abspath(__file__) + '/../application-test.cfg')
         self.assertEqual('override', env['spring.cloud.stream.bindings.output.producer.requiredGroups'])
+
+    def test_in_memory_config(self):
+        #unicode required for python 2
+        test_config = u"""
+[spring.cloud.stream.bindings.output]
+destination=destination
+
+[spring.cloud.stream.bindings.input]
+destination=destination_out
+group=group1
+        """
+        config = configparser.ConfigParser()
+        config.optionxform = str
+        config.read_string(test_config)
+        env = environment.env([], config)
+        self.assertEqual('destination', env['spring.cloud.stream.bindings.output.destination'])
 
 if __name__ == '__main__':
     unittest.main()
