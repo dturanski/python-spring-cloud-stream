@@ -26,6 +26,6 @@ To install the Spring Cloud Stream module:
 * You may need to change permissions or run the following as sudo
 
 
-| `$pip install setuptools`
-| `$python ./setup.py install`
+| ``$pip install setuptools``
+| ``$python ./setup.py install``
 
