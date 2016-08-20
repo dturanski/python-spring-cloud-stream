@@ -12,7 +12,7 @@ setup(name='spring-cloud-stream',
       url = 'https://github.com/dturanski/python-spring-cloud-stream',
       author = 'David Turanski',
       author_email = 'dturanski@pivotal.io',
-      license='Apache 2.0',
+      license='Apache Software License (http://www.apache.org/licenses/LICENSE-2.0)',
       classifiers = [
             # How mature is this project? Common values are
             #   3 - Alpha
@@ -22,17 +22,17 @@ setup(name='spring-cloud-stream',
 
             # Indicate who your project is intended for
             'Intended Audience :: Developers',
-            'Topic :: Software Development',
+            'Topic :: Software Development :: Libraries :: Python Modules',
 
             # Pick your license as you wish (should match "license" above)
-            'License :: Apache 2.0 License',
+            'License :: OSI Approved :: Apache Software License',
 
             # Specify the Python versions you support here. In particular, ensure
             # that you indicate whether you support Python 2, Python 3 or both.
             'Programming Language :: Python :: 2',
-            'Programming Language :: Python :: 2.7'
-            'Programming Language :: Python :: 3'
-            'Programming Language :: Python :: 3.4'
+            'Programming Language :: Python :: 2.7',
+            'Programming Language :: Python :: 3',
+            'Programming Language :: Python :: 3.4',
             'Programming Language :: Python :: 3.5'
       ],
       install_requires = ['pika','kafka-python','jsonpath_rw','configparser'],
