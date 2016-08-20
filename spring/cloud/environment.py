@@ -29,7 +29,7 @@ def env(args, configfilepath='./application.cfg'):
 
 def __parse_command_line__(args):
     environment = {}
-    if (args and len(args) > 0):
+    if (args):
         for arg in args:
             if (arg.startswith('--')):
                 try:

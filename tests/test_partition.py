@@ -42,7 +42,7 @@ class TestPartition(unittest.TestCase):
         func = getattr(_selector, 'bar')
 
         body = '{"id":"abcde"}'
-        self.assertEquals('abcde-hello',func(self.body,self.properties))
+        self.assertEqual('abcde-hello',func(self.body,self.properties))
 
     def test_nested_module(self):
         selector_function_ref = "nested.deep.module.bar"
@@ -54,7 +54,7 @@ class TestPartition(unittest.TestCase):
         _selector = __import__(_package, globals(), locals(), [_module])
 
         func = getattr(_selector, _module)
-        self.assertEquals('123-value', func(self.body, self.properties))
+        self.assertEqual('123-value', func(self.body, self.properties))
 
     def test_jsonpath(self):
         val = json.loads(self.body)

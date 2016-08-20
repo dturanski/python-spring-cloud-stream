@@ -86,8 +86,8 @@ class TestCfApp(unittest.TestCase):
             '''
 
         rabbit = App(env).service('rabbit')
-        self.assertEquals('rabbit', rabbit['name'])
-        self.assertEquals('amqp://xgkwomgl:aIUHpX761b_pnC9tLnbaVOZAyE9s_1mH@fox.rmq.cloudamqp.com/xgkwomgl',
+        self.assertEqual('rabbit', rabbit['name'])
+        self.assertEqual('amqp://xgkwomgl:aIUHpX761b_pnC9tLnbaVOZAyE9s_1mH@fox.rmq.cloudamqp.com/xgkwomgl',
                           rabbit['credentials']['uri'])
 
 if __name__ == '__main__':

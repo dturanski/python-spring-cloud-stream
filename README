@@ -1,7 +1,0 @@
-#
-# This file expected by the python installer
-#
-The spring-cloud-stream module for Python allows native python apps to interoperate with Spring Cloud Stream and
-Spring Cloud Dataflow.
-
-See https://github.com/dturanski/python-spring-cloud-stream for examples.

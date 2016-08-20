@@ -12,20 +12,20 @@ class TestTypes(unittest.TestCase):
 
     def test_create_sink(self):
         sink = components.Sink()
-        self.assertEquals('input',sink.name)
+        self.assertEqual('input',sink.name)
 
     def test_create_source(self):
         source = components.Source()
-        self.assertEquals('output',source.name)
+        self.assertEqual('output',source.name)
 
 
     def test_create_processor(self):
         processor = components.Processor()
-        self.assertEquals(components.Sink, processor.input.__class__)
-        self.assertEquals('input', processor.input.name)
+        self.assertEqual(components.Sink, processor.input.__class__)
+        self.assertEqual('input', processor.input.name)
 
-        self.assertEquals(components.Source, processor.output.__class__)
-        self.assertEquals('output', processor.output.name)
+        self.assertEqual(components.Source, processor.output.__class__)
+        self.assertEqual('output', processor.output.name)
 
 if __name__ == '__main__':
     unittest.main()

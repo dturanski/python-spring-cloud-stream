@@ -64,7 +64,7 @@ def config_props(properties, prefix):
     props = {}
     pre = prefix + '.'
     for key, value in properties.items():
-        if (key.find(pre) == 0):
+        if (key.startswith(pre)):
             suffix = key[len(pre):]
             # don't include compound names (e.g., producer.foo)
             if (suffix.find('.') == -1):

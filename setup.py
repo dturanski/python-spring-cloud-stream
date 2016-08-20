@@ -35,6 +35,6 @@ setup(name='spring-cloud-stream',
             'Programming Language :: Python :: 3.4'
             'Programming Language :: Python :: 3.5'
       ],
-      install_requires = ['pika','kafka-python','jsonpath_rw'],
-      test_requires = ['mock', 'unittest2']
+      install_requires = ['pika','kafka-python','jsonpath_rw','configparser'],
+      tests_require = ['mock', 'unittest2']
       )
